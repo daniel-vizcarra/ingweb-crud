@@ -1,24 +1,39 @@
 <template>
-  <div>
-    <h1>User List</h1>
-    <ul>
-      <li v-for="user in users" :key="user.id">
-        {{ user.username }} - {{ user.email }}
-        <button @click="editUser(user)">Edit</button>
-        <button @click="deleteUser(user.id)">Delete</button>
-      </li>
-    </ul>
+  <b-container>
+    <b-row>
+      <b-col>
+        <h1 class="my-4 text-center">User Management</h1>
+        <b-table striped hover :items="users" :fields="fields">
+          <template #cell(actions)="data">
+            <b-button size="sm" variant="warning" @click="editUser(data.item)">Edit</b-button>
+            <b-button size="sm" variant="danger" @click="deleteUser(data.item.id)" class="ml-2">Delete</b-button>
+          </template>
+        </b-table>
+      </b-col>
+    </b-row>
 
-    <div>
-      <h2>{{ editing ? 'Edit User' : 'Add User' }}</h2>
-      <form @submit.prevent="handleSubmit">
-        <input type="text" v-model="userForm.username" placeholder="Username" required />
-        <input type="email" v-model="userForm.email" placeholder="Email" required />
-        <input type="password" v-model="userForm.password" placeholder="Password" required />
-        <button type="submit">{{ editing ? 'Update' : 'Create' }}</button>
-      </form>
-    </div>
-  </div>
+    <b-row class="mt-5">
+      <b-col>
+        <h3>{{ editing ? 'Edit User' : 'Add User' }}</h3>
+        <b-form @submit.prevent="handleSubmit">
+          <b-form-group label="Username" label-for="username">
+            <b-form-input id="username" v-model="userForm.username" required></b-form-input>
+          </b-form-group>
+
+          <b-form-group label="Email" label-for="email">
+            <b-form-input id="email" type="email" v-model="userForm.email" required></b-form-input>
+          </b-form-group>
+
+          <b-form-group label="Password" label-for="password">
+            <b-form-input id="password" type="password" v-model="userForm.password" required></b-form-input>
+          </b-form-group>
+
+          <b-button type="submit" variant="primary">{{ editing ? 'Update' : 'Create' }}</b-button>
+          <b-button type="reset" variant="secondary" @click="resetForm" class="ml-2">Reset</b-button>
+        </b-form>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -34,7 +49,12 @@ export default {
         email: '',
         password: ''
       },
-      editing: false
+      editing: false,
+      fields: [
+        { key: 'username', label: 'Username' },
+        { key: 'email', label: 'Email' },
+        { key: 'actions', label: 'Actions', class: 'text-center' }
+      ]
     };
   },
   methods: {
@@ -98,11 +118,7 @@ export default {
 </script>
 
 <style scoped>
-button {
-  margin-left: 5px;
-}
-
-form {
-  margin-top: 20px;
+h1 {
+  font-weight: bold;
 }
 </style>
